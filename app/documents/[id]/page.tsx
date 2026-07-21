@@ -154,41 +154,7 @@ export default function DocumentPage({ params }: { params: Promise<{ id: string 
     }
   };
 
-  const handleDownloadPDF = async () => {
-    setIsFileMenuOpen(false);
-    
-    // Dynamically import html2pdf
-    const html2pdf = (await import('html2pdf.js')).default;
-    
-    // Target the specific canvas wrapper instead of just the text area
-    const element = window.document.getElementById('document-canvas');
-    if (!element) return;
-    
-    // Temporarily remove responsive constraints so the PDF renders at full intended width
-    const originalMaxWidth = element.style.maxWidth;
-    element.style.maxWidth = 'none';
-    
-    const opt = {
-      margin: 0, // Remove html2pdf margins since we want the exact canvas dimensions
-      filename: `${document?.title || 'Document'}.pdf`,
-      image: { type: 'jpeg' as const, quality: 0.98 },
-      html2canvas: { 
-        scale: 2,
-        useCORS: true,
-        windowWidth: parseInt(PAGE_SIZES[pageSize].width)
-      },
-      jsPDF: { 
-        unit: 'px', // Use pixels to match our exact element sizing
-        format: [parseInt(PAGE_SIZES[pageSize].width), parseInt(PAGE_SIZES[pageSize].height)] as [number, number],
-        orientation: 'portrait' as const
-      }
-    };
-    
-    html2pdf().set(opt).from(element).save().then(() => {
-      // Restore responsive constraints after PDF generates
-      element.style.maxWidth = originalMaxWidth;
-    });
-  };
+
 
   if (loading) {
     return (
@@ -219,7 +185,7 @@ export default function DocumentPage({ params }: { params: Promise<{ id: string 
     <div className="min-h-screen bg-gray-100 text-black font-sans flex flex-col">
       
       {/* Sticky Header and Toolbar Container */}
-      <div className="sticky top-0 z-10 flex flex-col w-full shadow-sm">
+      <div className="sticky top-0 z-10 flex flex-col w-full shadow-sm print:hidden">
         {/* Editor Header */}
         <header className="flex items-center justify-between px-4 py-2 bg-white border-b-2 border-gray-200">
           <div className="flex items-center space-x-3 w-full">
@@ -265,13 +231,7 @@ export default function DocumentPage({ params }: { params: Promise<{ id: string 
                         >
                           Create new
                         </div>
-                        <div className="border-t border-gray-100 my-1"></div>
-                        <div 
-                          className="block px-4 py-2 text-sm text-gray-700 hover:bg-orange-50 hover:text-orange-600 transition-colors cursor-pointer"
-                          onClick={handleDownloadPDF}
-                        >
-                          Download to PDF
-                        </div>
+
                       </div>
                     </>
                   )}
@@ -495,7 +455,7 @@ export default function DocumentPage({ params }: { params: Promise<{ id: string 
       </div>
 
       {/* Editor Canvas */}
-      <main className="flex-1 overflow-y-auto p-4 sm:p-8 flex justify-center bg-gray-100">
+      <main className="flex-1 overflow-y-auto p-4 sm:p-8 flex justify-center bg-gray-100 print:bg-white print:p-0 print:block">
         <div 
           id="document-canvas"
           style={{ 
@@ -503,7 +463,7 @@ export default function DocumentPage({ params }: { params: Promise<{ id: string 
             minHeight: PAGE_SIZES[pageSize].height,
             maxWidth: '100%' 
           }}
-          className="bg-white shadow-md border border-gray-200 transition-all duration-300 ease-in-out flex flex-col"
+          className="bg-white shadow-md border border-gray-200 transition-all duration-300 ease-in-out flex flex-col print:shadow-none print:border-none print:m-0 print:w-full print:min-h-full"
         >
           <EditorContent editor={editor} className="flex-1 flex flex-col [&>div]:flex-1" />
         </div>
