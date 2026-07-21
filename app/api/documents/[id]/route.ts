@@ -23,13 +23,13 @@ export async function GET(
   }
 
   const isOwner = document.ownerId === userId;
-  const isShared = document.shares.some((share) => share.userId === userId);
+  const isShared = document.shares.some((share: any) => share.userId === userId);
 
   if (!isOwner && !isShared) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
-  const canEdit = isOwner || document.shares.some((share) => share.userId === userId && share.role === "EDITOR");
+  const canEdit = isOwner || document.shares.some((share: any) => share.userId === userId && share.role === "EDITOR");
 
   return NextResponse.json({ ...document, isOwner, canEdit });
 }
@@ -55,7 +55,7 @@ export async function PATCH(
   }
 
   const isOwner = document.ownerId === userId;
-  const isEditor = document.shares.some((share) => share.userId === userId && share.role === "EDITOR");
+  const isEditor = document.shares.some((share: any) => share.userId === userId && share.role === "EDITOR");
 
   if (!isOwner && !isEditor) {
     return NextResponse.json({ error: "Forbidden: You only have view access" }, { status: 403 });
