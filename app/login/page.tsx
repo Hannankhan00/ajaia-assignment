@@ -29,7 +29,7 @@ export default function LoginPage() {
         const data = await res.json();
         setError(data.error || "Failed to login");
       }
-    } catch (err) {
+    } catch {
       setError("An unexpected error occurred");
     } finally {
       setLoading(false);
@@ -89,7 +89,7 @@ export default function LoginPage() {
         </form>
 
         <p className="mt-8 text-center text-base font-medium text-black">
-          Don't have an account?{" "}
+          Don&apos;t have an account?{" "}
           <Link href="/signup" className="font-bold text-transparent bg-clip-text bg-gradient-to-r from-yellow-500 to-orange-500 hover:opacity-80">
             Sign up
           </Link>

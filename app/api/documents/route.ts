@@ -53,7 +53,7 @@ export async function GET(req: NextRequest) {
     }),
   ]);
 
-  const sharedDocuments = sharedDocumentsResult.map((share: any) => share.document);
+  const sharedDocuments = sharedDocumentsResult.map((share: { document: unknown }) => share.document);
 
   return NextResponse.json({ ownedDocuments, sharedDocuments });
 }

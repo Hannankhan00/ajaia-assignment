@@ -23,13 +23,13 @@ export async function GET(
   }
 
   const isOwner = document.ownerId === userId;
-  const isShared = document.shares.some((share: any) => share.userId === userId);
+  const isShared = document.shares.some((share: { userId: string }) => share.userId === userId);
 
   if (!isOwner && !isShared) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
-  const canEdit = isOwner || document.shares.some((share: any) => share.userId === userId && share.role === "EDITOR");
+  const canEdit = isOwner || document.shares.some((share: { userId: string; role: string }) => share.userId === userId && share.role === "EDITOR");
 
   return NextResponse.json({ ...document, isOwner, canEdit });
 }
@@ -55,14 +55,14 @@ export async function PATCH(
   }
 
   const isOwner = document.ownerId === userId;
-  const isEditor = document.shares.some((share: any) => share.userId === userId && share.role === "EDITOR");
+  const isEditor = document.shares.some((share: { userId: string; role: string }) => share.userId === userId && share.role === "EDITOR");
 
   if (!isOwner && !isEditor) {
     return NextResponse.json({ error: "Forbidden: You only have view access" }, { status: 403 });
   }
 
   const body = await req.json();
-  const updateData: any = {};
+  const updateData: { title?: string; content?: string } = {};
   if (body.title !== undefined) updateData.title = body.title;
   if (body.content !== undefined) updateData.content = body.content;
 

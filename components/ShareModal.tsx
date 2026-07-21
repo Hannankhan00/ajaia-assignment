@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 
 interface ShareModalProps {
   isOpen: boolean;
@@ -13,24 +13,26 @@ export default function ShareModal({ isOpen, onClose, documentId }: ShareModalPr
   const [shareRole, setShareRole] = useState<"VIEWER" | "EDITOR">("VIEWER");
   const [shareStatus, setShareStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [shareMessage, setShareMessage] = useState("");
-  const [sharedUsers, setSharedUsers] = useState<any[]>([]);
+  const [shares, setShares] = useState<{ id: string; user: { name: string; email: string }; role: string }[]>([]);
 
-  const fetchShares = async () => {
+  const fetchShares = useCallback(async () => {
     try {
       const res = await fetch(`/api/documents/${documentId}/shares`);
       if (res.ok) {
         const data = await res.json();
-        setSharedUsers(data);
+        setShares(data);
       }
     } catch (err) {
       console.error(err);
     }
-  };
+  }, [documentId]);
 
   useEffect(() => {
     if (isOpen && documentId) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       fetchShares();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen, documentId]);
 
   const handleShareSubmit = async (e: React.FormEvent) => {
@@ -56,7 +58,7 @@ export default function ShareModal({ isOpen, onClose, documentId }: ShareModalPr
         setShareStatus("error");
         setShareMessage(data.error || "Failed to share document");
       }
-    } catch (err) {
+    } catch {
       setShareStatus("error");
       setShareMessage("An unexpected error occurred");
     }
@@ -125,7 +127,7 @@ export default function ShareModal({ isOpen, onClose, documentId }: ShareModalPr
                 </div>
               </div>
               
-              {sharedUsers.map((share) => (
+              {shares.map((share) => (
                 <div key={share.id} className="flex items-center justify-between">
                   <div className="flex items-center space-x-3">
                     <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-gray-700 font-bold text-sm uppercase">

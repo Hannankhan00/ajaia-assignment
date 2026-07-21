@@ -101,7 +101,7 @@ export default function DocumentPage({ params }: { params: Promise<{ id: string 
         } else {
           setError("Document not found or you don't have permission.");
         }
-      } catch (err) {
+      } catch {
         setError("Failed to load document.");
       } finally {
         setLoading(false);
