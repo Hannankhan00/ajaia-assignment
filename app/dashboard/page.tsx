@@ -31,7 +31,7 @@ export default async function DashboardPage({
     }),
   ]);
 
-  const sharedDocuments = sharedDocumentsResult.map((s) => s.document);
+  const sharedDocuments = sharedDocumentsResult.map((s: any) => s.document);
 
   return (
     <div className="min-h-screen bg-white text-black font-sans flex flex-col">
