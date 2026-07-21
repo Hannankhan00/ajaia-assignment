@@ -164,7 +164,7 @@ export default async function DashboardPage({
                   </div>
                 ) : (
                   <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-                    {ownedDocuments.map((doc) => (
+                    {ownedDocuments.map((doc: any) => (
                       <DocumentCard key={doc.id} doc={doc} isOwner={true} />
                     ))}
                   </div>
@@ -180,7 +180,7 @@ export default async function DashboardPage({
                   </div>
                 ) : (
                   <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-                    {sharedDocuments.map((doc) => (
+                    {sharedDocuments.map((doc: any) => (
                       <DocumentCard key={doc.id} doc={doc} isOwner={false} />
                     ))}
                   </div>
